@@ -1,32 +1,36 @@
-.github/workflows/slide.yml
-name: Build slide
-on:
-  push:
-    paths: ["analysis/*.md"]        # analysis フォルダだけ監視
+---
+marp: true
+---
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+# 店舗調査まとめ
 
-      # Marp CLI（Markdown→PPTX変換ツール）をセット
-      - uses: marp-team/marp-cli-action@v3
+---
 
-      # 新しく追加/変更された .md を全部変換
-      - name: convert
-        run: |
-          mkdir -p slides
-          for f in $(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep analysis/); do
-            base=$(basename "$f" .md)
-            marp "$f" -o "slides/${base}.pptx"
-          done
+## この店舗の特徴
 
-      # 生成した pptx をリポジトリに戻す
-      - name: commit slides
-        run: |
-          git config user.name  "actions-bot"
-          git config user.email "bot@users.noreply.github.com"
-          git add slides/*.pptx
-          git commit -m "auto: add slides" || echo "no change"
-          git push
+- 2021年7月 歌舞伎町にオープン  
+- SNS戦略・話題性で注目
+- 20～30代中心、グループ来店多い
+- 広く綺麗な店内、非日常感
+- フレンドリーなキャスト
+- イベント・コラボで集客
+- 類似店より知名度・規模が強み
+
+---
+
+## 将来予想
+
+- SNS・イベントで安定集客が続く
+- 常連・リピーターがさらに増加
+- 競合との差別化が今後の課題
+- 料金や混雑対応で満足度UPの余地
+- 4周年に向けて新たな話題作りに期待
+
+---
+
+## まとめ
+
+- 強みを活かしつつ、  
+  さらなる差別化やサービス向上で  
+  今後も成長が期待できる店舗
+---
