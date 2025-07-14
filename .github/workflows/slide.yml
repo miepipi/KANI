@@ -1,0 +1,31 @@
+name: Build slide
+on:
+  push:
+    paths: ["analysis/*.md"]        # analysis フォルダだけ監視
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Marp CLI（Markdown→PPTX変換ツール）をセット
+      - uses: marp-team/marp-cli-action@v3
+
+      # 新しく追加/変更された .md を全部変換
+      - name: convert
+        run: |
+          mkdir -p slides
+          for f in $(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep analysis/); do
+            base=$(basename "$f" .md)
+            marp "$f" -o "slides/${base}.pptx"
+          done
+
+      # 生成した pptx をリポジトリに戻す
+      - name: commit slides
+        run: |
+          git config user.name  "actions-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add slides/*.pptx
+          git commit -m "auto: add slides" || echo "no change"
+          git push
